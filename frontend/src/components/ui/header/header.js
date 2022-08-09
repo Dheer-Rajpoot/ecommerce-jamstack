@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
@@ -6,20 +6,26 @@ import Button from "@material-ui/core/Button"
 import IconButton from "@material-ui/core/IconButton"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
+import headerStyles from "./headerStyles"
 
-import search from "../../images/search.svg"
-import cart from "../../images/cart.svg"
-import account from "../../images/account-header.svg"
-import menu from "../../images/menu.svg"
+import search from "../../../images/search.svg"
+import cart from "../../../images/cart.svg"
+import account from "../../../images/account-header.svg"
 
 export default function Header() {
+  const classes = headerStyles()
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
         <Button>
-          <Typography variant="h1">VAR X</Typography>
+          <Typography variant="h1">
+            <span className={classes.logoText}>VAR</span> X
+          </Typography>
         </Button>
-        <Tabs>
+        <Tabs
+          value={0}
+          classes={{ indicator: classes.colorIndicator, root: classes.tabs }}
+        >
           <Tab label="Hats"></Tab>
           <Tab label="Hoodies"></Tab>
           <Tab label="Shirts"></Tab>
