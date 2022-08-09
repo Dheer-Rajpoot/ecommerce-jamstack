@@ -12,8 +12,13 @@ import search from "../../../images/search.svg"
 import cart from "../../../images/cart.svg"
 import account from "../../../images/account-header.svg"
 
-export default function Header() {
+export default function Header({ categories }) {
   const classes = headerStyles()
+  const routes = [
+    ...categories,
+    { node: { name: "Contact Us", strapiId: "contact" } },
+  ]
+
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
@@ -26,10 +31,9 @@ export default function Header() {
           value={0}
           classes={{ indicator: classes.colorIndicator, root: classes.tabs }}
         >
-          <Tab label="Hats"></Tab>
-          <Tab label="Hoodies"></Tab>
-          <Tab label="Shirts"></Tab>
-          <Tab label="Contact Us"></Tab>
+          {routes.map(route => (
+            <Tab label={route.node.name} key={route.node.strapiId}></Tab>
+          ))}
         </Tabs>
         <IconButton>
           <img src={search} alt="search"></img>
