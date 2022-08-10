@@ -8,11 +8,11 @@ import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
 import headerStyles from "./headerStyles"
 import useMediaQuery from "@material-ui/core/useMediaQuery"
-import Hidden from "@material-ui/core/Hidden"
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
+import { Link } from "gatsby"
 
 import search from "../../../images/search.svg"
 import cart from "../../../images/cart.svg"
@@ -26,7 +26,7 @@ export default function Header({ categories }) {
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent)
   const routes = [
     ...categories,
-    { node: { name: "Contact Us", strapiId: "contact" } },
+    { node: { name: "Contact Us", strapiId: "contact", link: "/contact" } },
   ]
 
   const tabs = (
@@ -35,7 +35,13 @@ export default function Header({ categories }) {
       classes={{ indicator: classes.colorIndicator, root: classes.tabs }}
     >
       {routes.map(route => (
-        <Tab label={route.node.name} key={route.node.strapiId}></Tab>
+        <Tab
+          component={Link}
+          to={route.node.link || `/${route.node.name.toLowerCase()}`}
+          classes={{ root: classes.tab }}
+          label={route.node.name}
+          key={route.node.strapiId}
+        ></Tab>
       ))}
     </Tabs>
   )
@@ -46,38 +52,62 @@ export default function Header({ categories }) {
       onClose={() => setDrawerOpen(false)}
       disableBackdropTransition={!iOS}
       disableDiscovery={iOS}
+      classes={{ paper: classes.drawer }}
     >
       <List disablePadding>
         {routes.map(route => (
           <ListItem divider button key={route.node.strapiId}>
-            <ListItemText primary={route.node.name}></ListItemText>
+            <ListItemText
+              classes={{ primary: classes.listItemText }}
+              primary={route.node.name}
+            ></ListItemText>
           </ListItem>
         ))}
       </List>
     </SwipeableDrawer>
   )
+  const actions = [
+    {
+      icon: search,
+      alt: "search",
+      visible: true,
+      onClick: () => console.log("search"),
+    },
+    { icon: cart, alt: "cart", visible: true, link: "/cart" },
+    { icon: account, alt: "account", visible: !matchesMD, link: "/account" },
+    {
+      icon: menu,
+      alt: "menu",
+      visible: matchesMD,
+      onClick: () => setDrawerOpen(true),
+    },
+  ]
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
-        <Button>
+        <Button classes={{ root: classes.logoContainer }}>
           <Typography variant="h1">
             <span className={classes.logoText}>VAR</span> X
           </Typography>
         </Button>
         {matchesMD ? drawer : tabs}
-        <IconButton>
-          <img className={classes.icon} src={search} alt="search"></img>
-        </IconButton>
-        <IconButton>
-          <img className={classes.icon} src={cart} alt="cart"></img>
-        </IconButton>
-        <IconButton onClick={() => (matchesMD ? setDrawerOpen(true) : null)}>
-          <img
-            className={classes.icon}
-            src={matchesMD ? menu : account}
-            alt={matchesMD ? "menu" : "account"}
-          ></img>
-        </IconButton>
+        {actions.map(
+          action =>
+            action.visible && (
+              <IconButton
+                key={action.alt}
+                component={action.onClick ? undefined : Link}
+                to={action.onClick ? undefined : action.link}
+                onClick={action.onClick}
+              >
+                <img
+                  className={classes.icon}
+                  src={action.icon}
+                  alt={action.alt}
+                ></img>
+              </IconButton>
+            )
+        )}
       </Toolbar>
     </AppBar>
   )

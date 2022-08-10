@@ -7,6 +7,15 @@ export default makeStyles(theme => ({
   logoText: {
     color: theme.palette.common.offBlack,
   },
+  logoContainer: {
+    [theme.breakpoints.down("md")]: {
+      marginRight: "auto",
+    },
+  },
+  tab: {
+    ...theme.typography.body1,
+    fontWeight: 600,
+  },
   tabs: {
     marginLeft: "auto",
     marginRight: "auto",
@@ -14,5 +23,11 @@ export default makeStyles(theme => ({
   icon: {
     height: "3rem",
     width: "3rem",
+  },
+  drawer: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  listItemText: {
+    color: "#fff",
   },
 }))
