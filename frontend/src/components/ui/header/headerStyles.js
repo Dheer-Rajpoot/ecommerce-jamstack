@@ -11,4 +11,8 @@ export default makeStyles(theme => ({
     marginLeft: "auto",
     marginRight: "auto",
   },
+  icon: {
+    height: "3rem",
+    width: "3rem",
+  },
 }))

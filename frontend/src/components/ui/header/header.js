@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
@@ -7,18 +7,55 @@ import IconButton from "@material-ui/core/IconButton"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
 import headerStyles from "./headerStyles"
+import useMediaQuery from "@material-ui/core/useMediaQuery"
+import Hidden from "@material-ui/core/Hidden"
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemText from "@material-ui/core/ListItemText"
 
 import search from "../../../images/search.svg"
 import cart from "../../../images/cart.svg"
 import account from "../../../images/account-header.svg"
+import menu from "../../../images/menu.svg"
 
 export default function Header({ categories }) {
   const classes = headerStyles()
+  const matchesMD = useMediaQuery(theme => theme.breakpoints.down("md"))
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent)
   const routes = [
     ...categories,
     { node: { name: "Contact Us", strapiId: "contact" } },
   ]
 
+  const tabs = (
+    <Tabs
+      value={0}
+      classes={{ indicator: classes.colorIndicator, root: classes.tabs }}
+    >
+      {routes.map(route => (
+        <Tab label={route.node.name} key={route.node.strapiId}></Tab>
+      ))}
+    </Tabs>
+  )
+  const drawer = (
+    <SwipeableDrawer
+      open={drawerOpen}
+      onOpen={() => setDrawerOpen(true)}
+      onClose={() => setDrawerOpen(false)}
+      disableBackdropTransition={!iOS}
+      disableDiscovery={iOS}
+    >
+      <List disablePadding>
+        {routes.map(route => (
+          <ListItem divider button key={route.node.strapiId}>
+            <ListItemText primary={route.node.name}></ListItemText>
+          </ListItem>
+        ))}
+      </List>
+    </SwipeableDrawer>
+  )
   return (
     <AppBar color="transparent" elevation={0}>
       <Toolbar>
@@ -27,22 +64,19 @@ export default function Header({ categories }) {
             <span className={classes.logoText}>VAR</span> X
           </Typography>
         </Button>
-        <Tabs
-          value={0}
-          classes={{ indicator: classes.colorIndicator, root: classes.tabs }}
-        >
-          {routes.map(route => (
-            <Tab label={route.node.name} key={route.node.strapiId}></Tab>
-          ))}
-        </Tabs>
+        {matchesMD ? drawer : tabs}
         <IconButton>
-          <img src={search} alt="search"></img>
+          <img className={classes.icon} src={search} alt="search"></img>
         </IconButton>
         <IconButton>
-          <img src={cart} alt="cart"></img>
+          <img className={classes.icon} src={cart} alt="cart"></img>
         </IconButton>
-        <IconButton>
-          <img src={account} alt="account"></img>
+        <IconButton onClick={() => (matchesMD ? setDrawerOpen(true) : null)}>
+          <img
+            className={classes.icon}
+            src={matchesMD ? menu : account}
+            alt={matchesMD ? "menu" : "account"}
+          ></img>
         </IconButton>
       </Toolbar>
     </AppBar>
